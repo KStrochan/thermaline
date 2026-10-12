@@ -6,19 +6,13 @@ Heat pumps, boilers and solar power for homes and small businesses. We size the 
 
 ## Status
 
-In progress. The groundwork is done: brand colors and fonts, the contact form with Telegram delivery, metadata, tests and a Lighthouse check. The pages below are next.
+Live at https://thermaline.vercel.app
 
-Pages:
+What is built:
 
-- [ ] Home
-- [ ] Services (heat pumps, boilers, solar)
-- [ ] Calculator
-- [ ] Projects (4 case studies)
-- [ ] Contact
-
-Features:
-
-- [ ] Power and cost estimate calculator (floor area, building type, system type) that attaches its result to the enquiry
+- Home: hero with a live sizing widget, the three systems as spec sheets, process, recent installs, FAQ and a survey form
+- System calculator (`/calculator`): size, price range, yearly saving and payback for a heat pump, boiler or solar, with the result sent to the contact form
+- Contact page (`/contact`) that picks up the estimate from the calculator
 
 ## Design
 
@@ -72,11 +66,11 @@ Enquiries go to a Telegram chat. Copy `.env.example` to `.env.local` and fill in
 
 ## Deploying
 
-Import the repository in Vercel and add the two Telegram variables if the form should deliver leads. Update `url` in `content/site.ts` once the site has its final domain.
+Import the repository in Vercel and add the two Telegram variables if the form should deliver leads. If the domain changes, update `url` in `content/site.ts` and `tests/metadata.test.ts`.
 
 ## Credits
 
-Fonts are licensed under the SIL Open Font License; the license texts are in `app/fonts`. Photos will come from Unsplash and are credited in the site footer.
+Fonts are licensed under the SIL Open Font License; the license texts are in `app/fonts`. Photos are hotlinked from Unsplash and credited in the site footer.
 
 ## License
 
