@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
+import { Odometer } from "@/components/anim/Odometer";
 import { AREA_MAX, AREA_MIN, estimate, formatUsd, type Insulation } from "@/lib/calculator";
 
 const insulationOptions: { value: Insulation; label: string }[] = [
@@ -67,13 +68,16 @@ export function QuickEstimate() {
           <div className="bg-surface p-3">
             <dt className="text-xs text-muted">Recommended size</dt>
             <dd className="font-display text-3xl tabular-nums">
-              {result.size} {result.unit}
+              <Odometer value={`${result.size} ${result.unit}`} />
             </dd>
+            <div aria-hidden="true" className="mt-2 h-1.5 bg-border">
+              <div className="load-bar h-full bg-accent" style={{ width: `${Math.min(100, (result.size / 30) * 100)}%` }} />
+            </div>
           </div>
           <div className="bg-surface p-3">
             <dt className="text-xs text-muted">Installed price</dt>
             <dd className="font-display text-xl tabular-nums leading-tight">
-              {formatUsd(result.costLow)} to {formatUsd(result.costHigh)}
+              <Odometer value={formatUsd(result.costLow)} /> to <Odometer value={formatUsd(result.costHigh)} />
             </dd>
           </div>
         </dl>

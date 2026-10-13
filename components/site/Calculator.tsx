@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
+import { Odometer } from "@/components/anim/Odometer";
 import {
   AREA_MAX,
   AREA_MIN,
@@ -128,18 +129,20 @@ export function Calculator({ initial }: { initial: EstimateInput }) {
             <div className="spec-row">
               <dt className="text-sm text-muted">Recommended size</dt>
               <dd className="font-display text-3xl tabular-nums">
-                {result.size} {result.unit}
+                <Odometer value={`${result.size} ${result.unit}`} />
               </dd>
             </div>
             <div className="spec-row">
               <dt className="text-sm text-muted">Installed price</dt>
               <dd className="font-semibold tabular-nums">
-                {formatUsd(result.costLow)} to {formatUsd(result.costHigh)}
+                <Odometer value={formatUsd(result.costLow)} /> to <Odometer value={formatUsd(result.costHigh)} />
               </dd>
             </div>
             <div className="spec-row">
               <dt className="text-sm text-muted">Yearly saving</dt>
-              <dd className="font-semibold tabular-nums">about {formatUsd(result.annualSaving)}</dd>
+              <dd className="font-semibold tabular-nums">
+                about <Odometer value={formatUsd(result.annualSaving)} />
+              </dd>
             </div>
             <div className="spec-row">
               <dt className="text-sm text-muted">Pays for itself in</dt>

@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { submitLead } from "@/app/actions";
+import { Counter } from "@/components/anim/Counter";
+import { HeatFlow } from "@/components/anim/HeatFlow";
+import { PlayWhenVisible } from "@/components/anim/PlayWhenVisible";
+import { Reveal } from "@/components/anim/Reveal";
+import { ScrollProgress } from "@/components/anim/ScrollProgress";
 import { LeadForm } from "@/components/LeadForm";
 import { QuickEstimate } from "@/components/site/QuickEstimate";
 import { faqs, photos, projects, steps, systems } from "@/content/home";
@@ -11,10 +17,10 @@ import { unsplash } from "@/lib/unsplash";
 
 export const metadata: Metadata = buildMetadata(site, { path: "/" });
 
-const heroFacts: [string, string][] = [
-  ["Systems installed since 2011", "1,400+"],
-  ["Average heating bill after a heat pump", "−52%"],
-  ["Survey to switch-on", "3 weeks"],
+const heroFacts: { label: string; value: number; prefix?: string; suffix?: string }[] = [
+  { label: "Systems installed since 2011", value: 1400, suffix: "+" },
+  { label: "Average heating bill after a heat pump", value: 52, prefix: "−", suffix: "%" },
+  { label: "Survey to switch-on", value: 3, suffix: " weeks" },
 ];
 
 export default function HomePage() {
@@ -39,10 +45,12 @@ export default function HomePage() {
               </Link>
             </div>
             <dl className="grid max-w-xl">
-              {heroFacts.map(([label, value]) => (
-                <div key={label} className="spec-row">
-                  <dt className="text-sm text-muted">{label}</dt>
-                  <dd className="font-display text-xl">{value}</dd>
+              {heroFacts.map((fact) => (
+                <div key={fact.label} className="spec-row">
+                  <dt className="text-sm text-muted">{fact.label}</dt>
+                  <dd className="font-display text-xl">
+                    <Counter value={fact.value} prefix={fact.prefix} suffix={fact.suffix} />
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -62,6 +70,9 @@ export default function HomePage() {
               <span className="dimension -bottom-6 left-0 right-0 justify-center">
                 <span className="bg-bg px-2">1,100 mm outdoor unit</span>
               </span>
+              <PlayWhenVisible delay={1500} className="absolute -right-2 -top-8 w-40 shadow-xl shadow-fg/15 sm:-right-6 sm:w-56">
+                <HeatFlow />
+              </PlayWhenVisible>
             </div>
             <div className="pt-4">
               <QuickEstimate />
@@ -85,7 +96,7 @@ export default function HomePage() {
               id={system.id}
               className={`grid scroll-mt-24 gap-8 md:grid-cols-2 md:items-center ${index % 2 === 1 ? "md:[&>figure]:order-2" : ""}`}
             >
-              <figure className="relative">
+              <Reveal as="figure" variant="curtain" className="relative">
                 <Image
                   src={unsplash(system.photo, 1200)}
                   alt={system.photoAlt}
@@ -94,7 +105,7 @@ export default function HomePage() {
                   sizes="(min-width: 768px) 560px, 100vw"
                   className="aspect-[3/2] h-auto w-full bg-border object-cover"
                 />
-              </figure>
+              </Reveal>
               <div className="grid gap-5">
                 <h3 className="font-display text-3xl font-semibold">{system.name}</h3>
                 <p className="text-muted">{system.summary}</p>
@@ -115,17 +126,22 @@ export default function HomePage() {
       <section className="bg-fg text-bg">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
           <h2 className="font-display text-4xl font-semibold sm:text-5xl">From survey to switch-on</h2>
-          <ol className="mt-12 grid gap-px bg-bg/20 md:grid-cols-4">
+          <ScrollProgress className="mt-12">
+          <div aria-hidden="true" className="mb-px h-1 bg-bg/20">
+            <div className="scroll-grow-x h-full bg-accent" />
+          </div>
+          <ol className="grid gap-px bg-bg/20 md:grid-cols-4">
             {steps.map((step, index) => (
-              <li key={step.title} className="grid content-start gap-3 bg-fg p-6 md:pr-8">
+              <Reveal as="li" key={step.title} delay={index * 0.12} className="grid content-start gap-3 bg-fg p-6 md:pr-8">
                 <span className="font-display text-5xl text-accent" aria-hidden="true">
                   {index + 1}
                 </span>
                 <h3 className="font-display text-2xl">{step.title}</h3>
                 <p className="text-sm text-bg/75">{step.text}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
+          </ScrollProgress>
         </div>
       </section>
 
@@ -146,7 +162,7 @@ export default function HomePage() {
               className="aspect-[4/3] h-auto w-full bg-border object-cover"
             />
           </div>
-          <div className="overflow-x-auto">
+          <Reveal variant="mark" className="overflow-x-auto">
             <table className="w-full min-w-[34rem] border-collapse text-left">
               <caption className="sr-only">Recent installations and their results</caption>
               <thead>
@@ -158,19 +174,21 @@ export default function HomePage() {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <tr key={project.place} className="border-b border-border align-top">
                     <th scope="row" className="py-4 pr-4 font-medium">{project.place}</th>
                     <td className="py-4 pr-4 text-muted">{project.system}</td>
                     <td className="whitespace-nowrap py-4 pr-4 tabular-nums text-muted">{project.size}</td>
                     <td className="py-4">
-                      <span className="whitespace-nowrap bg-accent px-1.5 py-0.5 font-semibold">{project.result}</span>
+                      <span className="mark whitespace-nowrap px-1.5 py-0.5 font-semibold" style={{ "--md": `${0.3 + index * 0.15}s` } as CSSProperties}>
+                        {project.result}
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+          </Reveal>
         </div>
       </section>
 
